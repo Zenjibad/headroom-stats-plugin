@@ -35,6 +35,11 @@ export interface HeadroomSnapshot {
 
 export const name = 'headroom-stats-plugin'
 
+// webServer is a hard dependency: the host half exists to serve the client
+// bundle's stats route, so apply must wait for it (a `ctx.get` probe can run
+// before the service is provided and silently register nothing).
+export const inject = ['webServer']
+
 /** Subset of the subprocess service we use (typed loosely to avoid a hard dep). */
 interface SubprocessLike {
   resolveExecutable(command: string): Promise<string>
@@ -58,10 +63,10 @@ interface FsLike {
 
 export function apply(ctx: Context): void {
   const fsRef = ctx.get('fs') as FsLike | undefined
-  const webServer = ctx.get('webServer') as
-    | { register(route: { kind: 'exact' | 'prefix'; path: string; handler: (req: unknown, res: any) => void | Promise<void> }): () => void }
-    | undefined
-  if (fsRef === undefined || webServer === undefined) return
+  // webServer is injected; the Context type here doesn't carry the
+  // dsh-host-webserver augmentation, so cast the injected service.
+  const webServer = (ctx as unknown as { webServer: { register(route: { kind: 'exact' | 'prefix'; path: string; handler: (req: unknown, res: any) => void | Promise<void> }): () => void } }).webServer
+  if (fsRef === undefined) return
   const fs = fsRef
 
   let envCache: { savingsPath: string | null; workspaceDir: string | null; userProfile: string | null } | null = null
