@@ -4,7 +4,7 @@ This file helps AI coding agents and LLM tooling understand and work with this r
 
 ## What this repo is
 
-`headroom-stats-plugin` is a **packaged Cordis plugin for DeepSeek Harness (DSH)** that displays live token/cost-savings stats from the [Headroom](https://github.com/HeadroomDeep/Headroom) compression proxy inside the DSH Web UI. It is a real profile-bundled plugin: `dsh.bundle` (`cordis.patch.yml`) mounts the host half, and the `dsh.client` declaration + `exports["./client"]` register the browser half — install once with `dsh plugin add`, loads on every DSH boot, no cordis_define.
+`headroom-stats-plugin` is a **packaged Cordis plugin for DeepSeek Harness (DSH)** that displays live token/cost-savings stats from the [Headroom](https://github.com/headroomlabs-ai/headroom/) compression proxy inside the DSH Web UI. It is a real profile-bundled plugin: `dsh.bundle` (`cordis.patch.yml`) mounts the host half, and the `dsh.client` declaration + `exports["./client"]` register the browser half — install once with `dsh plugin add`, loads on every DSH boot, no cordis_define.
 
 ## Repository layout
 

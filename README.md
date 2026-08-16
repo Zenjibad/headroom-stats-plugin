@@ -1,6 +1,6 @@
 # headroom-stats-plugin · Live Headroom Savings Dashboard for DeepSeek Harness (DSH)
 
-> Show **real-time token/cost savings** from the [Headroom](https://github.com/HeadroomDeep/Headroom) compression proxy **inside the** [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH) Web UI: a full dashboard in Settings plus a persistent stats line under the composer. 在 DSH 内实时展示 Headroom 压节省统计：设置页仪表盘 + 输入区常驻统计行。
+> Show **real-time token/cost savings** from the [Headroom](https://github.com/headroomlabs-ai/headroom/) compression proxy **inside the** [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH) Web UI: a full dashboard in Settings plus a persistent stats line under the composer. 在 DSH 内实时展示 Headroom 压节省统计：设置页仪表盘 + 输入区常驻统计行。
 >
 > 中文文档: [README.zh.md](README.zh.md) · LLM index: [llms.txt](llms.txt) · Agent guide: [AGENTS.md](AGENTS.md)
 
@@ -139,7 +139,7 @@ headroom-stats-plugin/
 
 ## 🙏 Credits
 
-- [Headroom](https://github.com/HeadroomDeep/Headroom) — the compression proxy and `proxy_savings.json` data source.
+- [Headroom](https://github.com/headroomlabs-ai/headroom/) — the compression proxy and `proxy_savings.json` data source.
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — the DSH plugin/dynamic runtime, Slots, theme, webServer, client-modules.
 - [DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) — reference for the packaged client-plugin build pattern.
 

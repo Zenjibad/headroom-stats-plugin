@@ -1,6 +1,6 @@
 # headroom-stats-plugin · DSH 实时 Headroom 压节省统计面板
 
-> 在 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH) Web UI 内**实时展示** [Headroom](https://github.com/HeadroomDeep/Headroom) 压缩代理的压节省统计：设置页完整仪表盘 + 输入区常驻统计行。
+> 在 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH) Web UI 内**实时展示** [Headroom](https://github.com/headroomlabs-ai/headroom/) 压缩代理的压节省统计：设置页完整仪表盘 + 输入区常驻统计行。
 >
 > English: [README.md](README.md) · LLM 索引: [llms.txt](llms.txt) · Agent 指南: [AGENTS.md](AGENTS.md)
 
@@ -139,7 +139,7 @@ headroom-stats-plugin/
 
 ## 🙏 致谢
 
-- [Headroom](https://github.com/HeadroomDeep/Headroom) — 压缩代理与 `proxy_savings.json` 数据源。
+- [Headroom](https://github.com/headroomlabs-ai/headroom/) — 压缩代理与 `proxy_savings.json` 数据源。
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — DSH 插件/动态运行时、Slots、主题、webServer、client-modules。
 - [DSH-better-sidebar](https://github.com/omdsh-dev/DSH-better-sidebar) — 打包式 client 插件构建模式的参考。
 
