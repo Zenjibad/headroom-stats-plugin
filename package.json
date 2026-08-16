@@ -1,0 +1,39 @@
+{
+  "name": "headroom-stats-plugin",
+  "version": "1.0.0",
+  "description": "Live token/cost-savings dashboard for the Headroom compression proxy inside the DeepSeek Harness (DSH) Web UI: a settings-page dashboard plus a persistent stats line under the composer. 在 DSH 内实时展示 Headroom 压节省统计：设置页仪表盘 + 输入区常驻统计行。",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "deepseek-harness-plugin",
+    "headroom",
+    "token-savings",
+    "compression",
+    "tokens",
+    "cost",
+    "stats",
+    "dashboard",
+    "ai-agent"
+  ],
+  "files": [
+    "package-source.js",
+    "docs",
+    "tests",
+    "AGENTS.md",
+    "llms.txt",
+    "llms-full.txt",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zenjibad/headroom-stats-plugin.git"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

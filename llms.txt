@@ -1,0 +1,28 @@
+# headroom-stats-plugin
+
+> Live token/cost-savings dashboard for the Headroom compression proxy inside the DeepSeek Harness (DSH) Web UI: a full dashboard in Settings plus a persistent stats line under the composer. 在 DSH 内实时展示 Headroom 压节省统计：设置页仪表盘 + 输入区常驻统计行。
+
+For the complete combined document, see [llms-full.txt](llms-full.txt). For human-readable docs, see [README.md](README.md) (中文) and [README.en.md](README.en.md) (English).
+
+## Key facts
+
+- [Repository](https://github.com/Zenjibad/headroom-stats-plugin): public GitHub repo, MIT license, `dsh-plugin` topic.
+- [Install](README.en.md#-quick-start): dynamic Cordis plugin only — `cordis_define` with `package-source.js` host/client strings, then `cordis_run`; no static `cordis.patch.yml`, no `dsh.bundle` manifest (the Client UI requires the runtime registry).
+- [Data source](README.en.md#️-how-it-works): reads `~/.headroom/proxy_savings.json` (env-overridable via `HEADROOM_SAVINGS_PATH` / `HEADROOM_WORKSPACE_DIR`) — read-only, no writes, no network.
+- [UI seats](README.en.md#-features): `settings.section` id `headroom-stats` (dashboard: lifetime KPIs, session, cache-vs-compression split, top-10 projects) + `conversation.composer.dock` id `headroom-dock` (one-line summary), fed by one shared 5s poller.
+- [Path detection](README.en.md#️-configuration): dynamic — `HEADROOM_SAVINGS_PATH` → `HEADROOM_WORKSPACE_DIR`/`proxy_savings.json` → `%USERPROFILE%\.headroom\proxy_savings.json`; env read once via the `subprocess` service (DSH host sandbox has no env access).
+- [Failure mode](README.en.md#-faq): missing/unparseable file → `{ok:false,error}`; settings shows unavailable, dock line hides, polling self-recovers ≤5s.
+
+## Documentation
+
+- [README.md (中文)](README.md): features, architecture, quick start, config, FAQ, security notes.
+- [README.en.md (English)](README.en.md): same content in English.
+- [package-source.js](package-source.js): authoritative dynamic-plugin source (host+client strings for `cordis_define`).
+- [AGENTS.md](AGENTS.md): repository guide for AI agents (layout, key behaviors, probed environment facts, testing).
+- [package.json](package.json): npm metadata (dynamic plugin — no `dsh.bundle` manifest).
+
+## Source layout
+
+- [package-source.js](package-source.js): the whole plugin — Host half (path detection, fs read, reshape, `getStats` RPC) + Client half (shared 5s poller, `React.createElement` dashboard, dock line, `--dsw-alias-*` theming).
+- [tests/fixtures/proxy_savings.json](tests/fixtures/proxy_savings.json): real-shape snapshot of the data file (point-in-time; the live file grows continuously).
+- [docs/design.md](docs/design.md) / [docs/plan.md](docs/plan.md): design spec and implementation plan (includes probed environment facts: no env access, no `~` expansion in `fs.resolve`, no mtime, no `Date` builtin).
