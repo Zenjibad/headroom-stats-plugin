@@ -12,7 +12,7 @@
 import React from 'react'
 import type { Context } from '@deepseek-ai/cordis'
 
-export const inject = ['@deepseek-ai/dsh-client-runtime', '@deepseek-ai/dsh-client-ui-slots']
+export const inject = ['slots']
 
 const POLL_MS = 5000
 const API = '/headroom-stats/api'
