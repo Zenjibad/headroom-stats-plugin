@@ -60,10 +60,13 @@ Client half (browser)            ▼
 
 This plugin is a **dynamic Cordis plugin**: the Client half (settings page + composer line UI) must register in the runtime registry, so dynamic install is the only meaningful path (a static `cordis.patch.yml` mount could load only the Host half with no UI — pointless, so it is not provided).
 
-1. In a DSH session call `cordis_define`; paste the `host` / `client` strings from [`package-source.js`](package-source.js) into `code.host` / `code.client` (`plugin.idPrefix: 'hstt'`, `name: 'headroom-stats'`).
-2. `cordis_run` the Package (approve the Client Package in the GUI on first run).
-3. Open **Settings → Headroom Stats** for the dashboard; the stats line appears under the chat input.
+1. In any DSH session, tell the agent one sentence: **"install the headroom-stats plugin"** (link this repo if you like).
+2. The agent reads [`package-source.js`](package-source.js), fills the `host` / `client` chunks into `cordis_define`'s `code.host` / `code.client` (plugin id prefix `hstt`), then runs `cordis_run`.
+3. On first run, approve the Client Package in the GUI (one check mark).
+4. Open **Settings → Headroom Stats** for the dashboard; the stats line appears under the chat input.
 
+> **You never need to know what `code.host` / `code.client` are** — those are the two code fields of the agent-side `cordis_define` tool; the agent fills them automatically from `package-source.js`. You just say "install"; the agent does the rest.
+>
 > Stop: `cordis_stop` → pluginId. Remove: `cordis_undefine` → pluginId. Once authorized, re-runs need no further approval.
 
 ### Prerequisites

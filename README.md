@@ -59,10 +59,13 @@ Client 半区（浏览器）              ▼
 
 本插件是**动态 Cordis 插件**：Client 半区（设置页 + 输入区 UI）必须在运行时注册表中注册，因此只支持动态安装（静态 `cordis.patch.yml` 挂载只能加载 Host 半区、无 UI，无意义，故不提供）。
 
-1. 在 DSH 会话中调用 `cordis_define`，`code.host` / `code.client` 分别粘贴 [`package-source.js`](package-source.js) 中的 `host` / `client` 字符串（`plugin.idPrefix: 'hstt'`，`name: 'headroom-stats'`）。
-2. `cordis_run` 启动该 Package（首次需在 GUI 批准 Client Package）。
-3. 打开 **设置 → Headroom Stats** 查看仪表盘；聊天输入框下方出现统计行。
+1. 在任意 DSH 会话里对 agent 说一句话：**「安装 headroom-stats 插件」**（可附上本仓库链接）。
+2. Agent 会读取 [`package-source.js`](package-source.js)，把其中的 `host` / `client` 两段代码填入 `cordis_define` 的 `code.host` / `code.client`（插件标识前缀 `hstt`），然后执行 `cordis_run`。
+3. 首次运行在 GUI 批准 Client Package（一个勾）。
+4. 打开 **设置 → Headroom Stats** 查看仪表盘；聊天输入框下方出现统计行。
 
+> **你不需要知道 `code.host` / `code.client` 是什么** —— 那是 agent 侧工具 `cordis_define` 的两个代码字段，由 agent 自动从 `package-source.js` 填写。你只需要说「安装」，剩下的交给 agent。
+>
 > 停止：`cordis_stop` → pluginId；卸载：`cordis_undefine` → pluginId。授权一次后重启无需再次批准。
 
 ### 使用前提
