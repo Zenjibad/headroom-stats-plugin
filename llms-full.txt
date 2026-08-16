@@ -5,7 +5,7 @@ Live token/cost-savings dashboard for the Headroom compression proxy inside the 
 - Repository: https://github.com/Zenjibad/headroom-stats-plugin (public, MIT, topic `dsh-plugin`)
 - Human docs: [README.md](README.md) (English) · [README.zh.md](README.zh.md) (中文)
 - Agent guide: [AGENTS.md](AGENTS.md)
-- Source: [package-source.js](package-source.js)
+- Source: [src/index.ts](src/index.ts) (host) · [src/client/index.tsx](src/client/index.tsx) (client)
 
 ## What it does
 
@@ -18,8 +18,14 @@ Two UI seats backed by one 5s poller, showing stats from headroom's `proxy_savin
 
 1. Host half (DSH process) probes env once via the `subprocess` service: `cmd /c echo %HEADROOM_SAVINGS_PATH%&echo %HEADROOM_WORKSPACE_DIR%&echo %USERPROFILE%` (DSH host sandbox exposes no direct env access; unexpanded `%VAR%` literals are treated as null).
 2. Path candidates in order: `HEADROOM_SAVINGS_PATH` → `HEADROOM_WORKSPACE_DIR`/`proxy_savings.json` → `%USERPROFILE%\.headroom\proxy_savings.json`. First existing wins. No hardcoded paths — shareable across machines.
-3. `fs` service: `stat` then `readText`, `JSON.parse`, reshape snake_case → camelCase (`projects` is an OBJECT keyed by name — converted to array, sorted desc by tokensSaved, top 10). Exposes `harness.handle('getStats')`.
-4. Client half: single `ctx.interval` 5s poller → `host.call('getStats')` → snapshot fan-out to both seats via a listeners set. Pure pull; never throws across RPC (`{ok:false,error}` on failure).
+3. `fs` service: `stat` then `readText`, `JSON.parse`, reshape snake_case → camelCase (`projects` is an OBJECT keyed by name — converted to array, sorted desc by tokensSaved, top 10). Served at `GET /headroom-stats/api` via the `webServer` route (node:http handler, JSON, `cache-control: no-store`).
+4. Client bundle: single 5s `setInterval` poller → `fetch('/headroom-stats/api')` → snapshot fan-out to both seats via a listeners set. Pure pull; the route never throws non-JSON (`{ok:false,error}` on failure).
+
+## Install (packaged, persists across restarts)
+
+- `dsh plugin --profile web add ./headroom-stats-plugin` (local dir) or `dsh plugin --profile web add git+https://github.com/Zenjibad/headroom-stats-plugin.git`; then restart DSH.
+- The package declares `dsh.bundle` (`cordis.patch.yml` inserts the host row) and `dsh.client` (`exports["./client"]` = the browser bundle, scanned by client-modules at boot). No cordis_define, no per-session re-install.
+- Remove: `dsh plugin --profile web rm headroom-stats-plugin` + restart.
 
 ## Configuration
 
@@ -31,23 +37,15 @@ No config file, no persisted settings. Env vars (read once, cached):
 | `HEADROOM_WORKSPACE_DIR` | headroom workspace override (appended `/proxy_savings.json`) |
 | `%USERPROFILE%` | fallback: `%USERPROFILE%\.headroom\proxy_savings.json` |
 
-Poll interval: 5s constant (`ctx.interval(poll, 5000)` in the Client half).
-
-## Install (dynamic only)
-
-This plugin is dynamic-only: the Client UI must register in the runtime registry, so there is no static `cordis.patch.yml` and no `dsh.bundle` manifest.
-
-1. `cordis_define` — paste `host`/`client` strings from `package-source.js` into `code.host`/`code.client` (`plugin.idPrefix: 'hstt'`, `name: 'headroom-stats'`).
-2. `cordis_run` the Package; approve the Client Package in the GUI on first run.
-3. Stop: `cordis_stop`. Remove: `cordis_undefine`. Re-runs need no further approval.
+Poll interval: 5s constant (`POLL_MS` in `src/client/index.tsx`).
 
 ## Key behaviors
 
-- Read-only: never writes to the headroom directory; no network.
+- Read-only: never writes to the headroom directory; no outbound network.
 - Single poller feeding both seats (no duplicate reads).
 - Dynamic path detection — never hardcode user paths.
 - Theme tokens only (`--dsw-alias-*`) in client CSS; font comes from seat-wrapper inheritance (do not set font-family).
-- `getStats` never throws; missing/unparseable file → unavailable state, self-recovers ≤5s.
+- Host route never throws non-JSON; missing/unparseable file → unavailable state, self-recovers ≤5s.
 
 ## Probed environment facts
 
@@ -55,23 +53,30 @@ This plugin is dynamic-only: the Client UI must register in the runtime registry
 - `fs.resolve` does not expand `~` or `${VAR}`; absolute Windows paths work.
 - `FsInfo` has no mtime (`version`, `type`, `size`) — re-read every poll.
 - `Date` is not a host builtin — snapshot carries no server timestamp.
-- Dynamic Tool definitions: `parameters` key (not `inputSchema`), `output: {schema, render}`, `output.schema.additionalProperties` explicit.
+- Client bundle = plain browser JS (ModuleLoader CJS factory): `fetch`, `setTimeout`, `document` available; React from the module table.
+- `webServer.register`: `{kind:'exact'|'prefix', path, handler(req,res)}` (node:http); duplicate (kind, path) throws.
 
 ## Testing
 
-- Runtime: `cordis_inspect_self(pluginId, packageId)` — host running with `getStats` handler, client running.
-- Slots: `Slots.listSubTree` root `settings.section` (occupant `headroom-stats`) and `conversation.composer.dock` (occupant `headroom-dock`).
+- Pre-restart: profile `package.json` `dependencies` + `dsh.profile.bundles` both list `headroom-stats-plugin`; `lib/client.js` has the ModuleLoader wrapper; `lib/index.js` exports `name` + `apply`.
+- Post-restart: Settings → Headroom Stats dashboard; composer dock line; `GET /headroom-stats/api` returns the JSON snapshot.
 - Failure path: temporarily rename `~/.headroom/proxy_savings.json` — settings shows unavailable, dock hides; restore → recovers ≤5s.
 - Fixture: `tests/fixtures/proxy_savings.json` is a point-in-time snapshot (the live file grows continuously — numeric comparison against the live file at review time is invalid by design).
 
+## Build
+
+`pnpm install && pnpm build` → `lib/index.js` (host, node ESM) + `lib/client.js` (client, CJS ModuleLoader closure, bundle id = package name). See `tsdown.config.ts`.
+
 ## Repository layout
 
-- `package-source.js` — authoritative plugin source (host+client strings, mirrors the registry Package)
-- `docs/design.md`, `docs/plan.md` — design spec + implementation plan
+- `src/index.ts` — host half
+- `src/client/index.tsx` — client bundle
+- `cordis.patch.yml` — `dsh.bundle` patch
+- `tsdown.config.ts` — build config
+- `package.json` — `exports["./client"]`, `dsh.client`, `dsh.bundle`
 - `tests/fixtures/proxy_savings.json` — real-shape snapshot
 - `AGENTS.md` — agent guide
-- `README.md`, `README.zh.md` — bilingual docs (en default, zh)
-- `package.json` — npm metadata (no `dsh.bundle`)
+- `README.md`, `README.zh.md` — bilingual docs
 
 ## License
 

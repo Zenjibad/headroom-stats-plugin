@@ -4,6 +4,36 @@
   "description": "Live token/cost-savings dashboard for the Headroom compression proxy inside the DeepSeek Harness (DSH) Web UI: a settings-page dashboard plus a persistent stats line under the composer. 在 DSH 内实时展示 Headroom 压节省统计：设置页仪表盘 + 输入区常驻统计行。",
   "license": "MIT",
   "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "src",
+    "AGENTS.md",
+    "llms.txt",
+    "llms-full.txt",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  },
   "keywords": [
     "dsh",
     "dsh-plugin",
@@ -18,22 +48,31 @@
     "dashboard",
     "ai-agent"
   ],
-  "files": [
-    "package-source.js",
-    "docs",
-    "tests",
-    "AGENTS.md",
-    "llms.txt",
-    "llms-full.txt",
-    "README.md",
-    "README.zh.md",
-    "LICENSE"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Zenjibad/headroom-stats-plugin.git"
   },
   "engines": {
     "node": ">=18"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "peerDependenciesMeta": {
+    "react": { "optional": true },
+    "@deepseek-ai/cordis": { "optional": true }
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@types/react": "^18.3.1",
+    "react": "^18.2.0",
+    "tsdown": "^0.4.0",
+    "typescript": "^5.6.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "watch": "tsdown --watch",
+    "typecheck": "tsc --noEmit"
   }
 }

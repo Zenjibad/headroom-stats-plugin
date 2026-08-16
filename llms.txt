@@ -7,9 +7,9 @@ For the complete combined document, see [llms-full.txt](llms-full.txt). For huma
 ## Key facts
 
 - [Repository](https://github.com/Zenjibad/headroom-stats-plugin): public GitHub repo, MIT license, `dsh-plugin` topic.
-- [Install](README.md#-quick-start): dynamic Cordis plugin only — tell an agent "install the headroom-stats plugin"; the agent fills `package-source.js` host/client strings into `cordis_define` and runs it; no static `cordis.patch.yml`, no `dsh.bundle` manifest (the Client UI requires the runtime registry).
-- [Data source](README.md#️-how-it-works): reads `~/.headroom/proxy_savings.json` (env-overridable via `HEADROOM_SAVINGS_PATH` / `HEADROOM_WORKSPACE_DIR`) — read-only, no writes, no network.
-- [UI seats](README.md#-features): `settings.section` id `headroom-stats` (dashboard: lifetime KPIs, session, cache-vs-compression split, top-10 projects) + `conversation.composer.dock` id `headroom-dock` (one-line summary), fed by one shared 5s poller.
+- [Install](README.md#-quick-start): packaged profile plugin — `dsh plugin --profile web add <spec>` (local dir or `git+https://github.com/Zenjibad/headroom-stats-plugin.git`), then restart DSH. `dsh.bundle` (`cordis.patch.yml`) mounts the host half; `dsh.client` + `exports["./client"]` register the browser half. Survives restarts, no cordis_define.
+- [Data source](README.md#️-how-it-works): host reads `~/.headroom/proxy_savings.json` (env-overridable via `HEADROOM_SAVINGS_PATH` / `HEADROOM_WORKSPACE_DIR`) — read-only, and serves the reshaped snapshot over `GET /headroom-stats/api` (webServer route).
+- [UI seats](README.md#-features): `settings.section` id `headroom-stats` (dashboard: lifetime KPIs, session, cache-vs-compression split, top-10 projects) + `conversation.composer.dock` id `headroom-dock` (one-line summary), fed by one shared 5s poller fetching the host route.
 - [Path detection](README.md#️-configuration): dynamic — `HEADROOM_SAVINGS_PATH` → `HEADROOM_WORKSPACE_DIR`/`proxy_savings.json` → `%USERPROFILE%\.headroom\proxy_savings.json`; env read once via the `subprocess` service (DSH host sandbox has no env access).
 - [Failure mode](README.md#-faq): missing/unparseable file → `{ok:false,error}`; settings shows unavailable, dock line hides, polling self-recovers ≤5s.
 
@@ -17,12 +17,15 @@ For the complete combined document, see [llms-full.txt](llms-full.txt). For huma
 
 - [README.md (English)](README.md): features, architecture, quick start, config, FAQ, security notes.
 - [README.zh.md (中文)](README.zh.md): same content in Chinese.
-- [package-source.js](package-source.js): authoritative dynamic-plugin source (host+client strings for `cordis_define`).
+- [src/index.ts](src/index.ts): host half — env probe, fs read, reshape, `/headroom-stats/api` route.
+- [src/client/index.tsx](src/client/index.tsx): client bundle — 5s poller, dashboard, dock line.
 - [AGENTS.md](AGENTS.md): repository guide for AI agents (layout, key behaviors, probed environment facts, testing).
-- [package.json](package.json): npm metadata (dynamic plugin — no `dsh.bundle` manifest).
+- [package.json](package.json): npm metadata with `dsh.bundle` + `dsh.client` manifests for `dsh plugin add`.
 
 ## Source layout
 
-- [package-source.js](package-source.js): the whole plugin — Host half (path detection, fs read, reshape, `getStats` RPC) + Client half (shared 5s poller, `React.createElement` dashboard, dock line, `--dsw-alias-*` theming).
+- [src/index.ts](src/index.ts): the host half — dynamic path detection, `fs` read + reshape, `webServer` JSON route.
+- [src/client/index.tsx](src/client/index.tsx): the client bundle — single 5s poller, `React.createElement` dashboard, dock line, `<style data-plugin>` with `--dsw-alias-*` theming.
+- [cordis.patch.yml](cordis.patch.yml): `dsh.bundle` patch inserting the plugin row.
+- [tsdown.config.ts](tsdown.config.ts): builds host (node ESM) + client (CJS ModuleLoader closure).
 - [tests/fixtures/proxy_savings.json](tests/fixtures/proxy_savings.json): real-shape snapshot of the data file (point-in-time; the live file grows continuously).
-- [docs/design.md](docs/design.md) / [docs/plan.md](docs/plan.md): design spec and implementation plan (includes probed environment facts: no env access, no `~` expansion in `fs.resolve`, no mtime, no `Date` builtin).
