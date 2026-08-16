@@ -3,7 +3,7 @@
 Live token/cost-savings dashboard for the Headroom compression proxy inside the DeepSeek Harness (DSH) Web UI.
 
 - Repository: https://github.com/Zenjibad/headroom-stats-plugin (public, MIT, topic `dsh-plugin`)
-- Human docs: [README.md](README.md) (中文) · [README.en.md](README.en.md) (English)
+- Human docs: [README.md](README.md) (English) · [README.zh.md](README.zh.md) (中文)
 - Agent guide: [AGENTS.md](AGENTS.md)
 - Source: [package-source.js](package-source.js)
 
@@ -70,7 +70,7 @@ This plugin is dynamic-only: the Client UI must register in the runtime registry
 - `docs/design.md`, `docs/plan.md` — design spec + implementation plan
 - `tests/fixtures/proxy_savings.json` — real-shape snapshot
 - `AGENTS.md` — agent guide
-- `README.md`, `README.en.md` — bilingual docs
+- `README.md`, `README.zh.md` — bilingual docs (en default, zh)
 - `package.json` — npm metadata (no `dsh.bundle`)
 
 ## License

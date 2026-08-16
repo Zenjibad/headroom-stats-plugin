@@ -14,7 +14,7 @@ This file helps AI coding agents and LLM tooling understand and work with this r
 | `docs/design.md` | Design spec: data sources, snapshot shape, UI seats, error handling. |
 | `docs/plan.md` | Implementation plan, including probed environment facts (see "Environment facts" below). |
 | `tests/fixtures/proxy_savings.json` | Real-shape snapshot of `proxy_savings.json` (point-in-time — the live file grows continuously; numeric comparisons against the live file at review time are invalid by design). |
-| `README.md` / `README.en.md` | Human docs (zh / en). |
+| `README.md` / `README.zh.md` | Human docs (en default, zh). |
 | `llms.txt` / `llms-full.txt` | LLM-friendly doc index / full text. |
 | `package.json` | npm metadata only — NO `dsh.bundle` manifest (dynamic-only plugin). |
 
