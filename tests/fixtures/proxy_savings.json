@@ -1,0 +1,79 @@
+{
+  "schema_version": 5,
+  "lifetime": {
+    "requests": 3310,
+    "tokens_saved": 10871407,
+    "compression_savings_usd": 4.146787,
+    "cache_read_tokens": 97259910,
+    "cache_savings_usd": 21.409486,
+    "total_input_tokens": 202578897,
+    "total_input_cost_usd": 23.940552,
+    "output_tokens_saved": 0,
+    "output_savings_usd": 0.0
+  },
+  "display_session": {
+    "requests": 375,
+    "tokens_saved": 3991989,
+    "compression_savings_usd": 0.558896,
+    "cache_read_tokens": 30015744,
+    "cache_savings_usd": 4.118168,
+    "total_input_tokens": 30989746,
+    "total_input_cost_usd": 0.220415,
+    "savings_percent": 11.41,
+    "started_at": "2026-08-15T23:12:58Z",
+    "last_activity_at": "2026-08-15T23:49:00Z"
+  },
+  "projects": {
+    "Administrator": {
+      "requests": 205,
+      "tokens_saved": 94264,
+      "compression_savings_usd": 0.013192,
+      "total_input_tokens": 2643493,
+      "total_input_cost_usd": 0.34327,
+      "last_activity_at": "2026-08-10T09:33:50Z"
+    },
+    "GTA YIM": {
+      "requests": 157,
+      "tokens_saved": 75986,
+      "compression_savings_usd": 0.010647,
+      "total_input_tokens": 2925842,
+      "total_input_cost_usd": 0.398359,
+      "last_activity_at": "2026-08-01T11:45:42Z"
+    },
+    "Photos": {
+      "requests": 123,
+      "tokens_saved": 468294,
+      "compression_savings_usd": 0.065563,
+      "total_input_tokens": 6267000,
+      "total_input_cost_usd": 0.877377,
+      "last_activity_at": "2026-08-11T15:04:04Z"
+    },
+    "clean": {
+      "requests": 50,
+      "tokens_saved": 43932,
+      "compression_savings_usd": 0.006148,
+      "total_input_tokens": 3498099,
+      "total_input_cost_usd": 0.488602,
+      "last_activity_at": "2026-07-27T11:34:04Z"
+    },
+    "Orange": {
+      "requests": 760,
+      "tokens_saved": 2763522,
+      "compression_savings_usd": 0.386916,
+      "total_input_tokens": 85299372,
+      "total_input_cost_usd": 11.805083,
+      "last_activity_at": "2026-08-12T09:44:39Z"
+    },
+    "Client": {
+      "requests": 125,
+      "tokens_saved": 37115,
+      "compression_savings_usd": 0.005194,
+      "total_input_tokens": 3670937,
+      "total_input_cost_usd": 0.506434,
+      "last_activity_at": "2026-07-30T09:40:43Z"
+    }
+  },
+  "by_model": null,
+  "history": [],
+  "lifetime_metrics": null
+}
